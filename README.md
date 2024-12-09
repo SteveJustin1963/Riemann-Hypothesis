@@ -532,21 +532,337 @@ Run this script to observe the adjusted operator's spectrum, compare it to known
 
 
 
-////////////////////////////////
-
-
 ### **Exploration: Primes via Entanglement**
 1. **Entangled States of Integers**:
    Construct a quantum entanglement model where integers \( n \) are "entangled" through their prime factors. Develop a matrix representation (tensor network) that captures these relationships.
 
+Here is a MATLAB implementation of the idea of constructing a quantum entanglement model where integers are "entangled" through their prime factors. The program builds a matrix representation (tensor network) to capture these relationships.
+
+### MATLAB Code: Primes via Entanglement
+
+```matlab
+% Parameters
+N = 100; % Maximum integer to consider
+primesList = primes(N); % Generate all primes up to N
+numPrimes = length(primesList);
+
+% Function to generate the entanglement matrix
+function entanglementMatrix = generateEntanglementMatrix(N, primesList)
+    entanglementMatrix = zeros(N, length(primesList)); % Initialize the matrix
+
+    % Populate the matrix
+    for n = 1:N
+        for pIndex = 1:length(primesList)
+            p = primesList(pIndex);
+            if mod(n, p) == 0 % If prime p divides n
+                entanglementMatrix(n, pIndex) = log(p); % Weight based on prime log
+            end
+        end
+    end
+end
+
+% Generate the entanglement matrix
+entanglementMatrix = generateEntanglementMatrix(N, primesList);
+
+% Visualization: Matrix as a Heatmap
+figure;
+imagesc(entanglementMatrix);
+colorbar;
+xlabel('Prime Factors');
+ylabel('Integers');
+title('Entanglement Matrix: Integers Entangled by Prime Factors');
+set(gca, 'XTick', 1:numPrimes, 'XTickLabel', primesList, 'XTickLabelRotation', 90);
+set(gca, 'YTick', 1:N, 'YTickLabel', 1:N);
+
+% Tensor Network-like Visualization
+figure;
+hold on;
+for n = 1:N
+    for pIndex = 1:numPrimes
+        if entanglementMatrix(n, pIndex) > 0
+            % Draw lines representing entanglement between integer and prime factor
+            plot([n, numPrimes + pIndex], [N - n, N - n], 'b-');
+        end
+    end
+end
+
+% Overlay integer and prime labels
+for n = 1:N
+    text(n, N - n, num2str(n), 'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle');
+end
+for pIndex = 1:numPrimes
+    text(numPrimes + pIndex, 0, num2str(primesList(pIndex)), 'HorizontalAlignment', 'center', ...
+        'VerticalAlignment', 'middle', 'Color', 'red');
+end
+
+title('Tensor Network Representation of Entangled Integers');
+xlabel('Primes');
+ylabel('Integers');
+hold off;
+```
+
+![image](https://github.com/user-attachments/assets/8c2d15d5-27ce-42f2-9a4a-c0349247b5da)
+
+
+
+### **Explanation**
+1. **Entanglement Matrix**:
+   - The `entanglementMatrix` captures the relationship between integers \( n \) and their prime factors \( p \).
+   - Each entry is weighted by the logarithm of the prime, reflecting a quantum-like influence.
+
+2. **Visualization**:
+   - The matrix is visualized as a heatmap, showing which primes divide which integers and the strength of the "entanglement."
+
+3. **Tensor Network Representation**:
+   - A network is constructed where integers are nodes connected to their prime factors via lines.
+   - Labels indicate the integers and primes, illustrating the entangled relationships.
+
+### **Adjustments**
+- Increase \( N \) for larger datasets.
+- Experiment with alternative weights (e.g., powers of primes or prime counts).
+- Extend the tensor network model to incorporate quantum-like states (e.g., amplitudes or phases).
+
+Here’s the updated MATLAB code incorporating the requested adjustments:
+
+### Adjustments Made:
+1. **Increased `N`** for larger datasets.
+2. **Alternative Weights**:
+   - Option to use powers of primes or prime counts instead of logarithmic weights.
+3. **Quantum-Like States**:
+   - Added quantum-like amplitudes and phases to represent entangled states more realistically.
+
+### Updated MATLAB Code
+
+```matlab
+% Parameters
+N = 200; % Maximum integer to consider (increased for larger datasets)
+primesList = primes(N); % Generate all primes up to N
+numPrimes = length(primesList);
+
+% Function to generate the entanglement matrix
+function entanglementMatrix = generateEntanglementMatrix(N, primesList, weightType)
+    entanglementMatrix = zeros(N, length(primesList)); % Initialize the matrix
+
+    % Populate the matrix
+    for n = 1:N
+        for pIndex = 1:length(primesList)
+            p = primesList(pIndex);
+            if mod(n, p) == 0 % If prime p divides n
+                switch weightType
+                    case 'log'
+                        entanglementMatrix(n, pIndex) = log(p); % Weight based on prime log
+                    case 'power'
+                        entanglementMatrix(n, pIndex) = p^2; % Weight based on power of prime
+                    case 'count'
+                        entanglementMatrix(n, pIndex) = 1; % Uniform weight for counting factors
+                end
+            end
+        end
+    end
+end
+
+% Generate the entanglement matrix with different weight types
+weightType = 'log'; % Change to 'power' or 'count' to experiment with other weights
+entanglementMatrix = generateEntanglementMatrix(N, primesList, weightType);
+
+% Quantum-like amplitudes and phases
+amplitudes = abs(entanglementMatrix); % Use matrix values as amplitudes
+phases = 2 * pi * rand(size(entanglementMatrix)); % Random phases for quantum-like states
+quantumStates = amplitudes .* exp(1i * phases); % Combine amplitude and phase
+
+% Visualization: Heatmap of entanglement matrix
+figure;
+imagesc(amplitudes);
+colorbar;
+xlabel('Prime Factors');
+ylabel('Integers');
+title(['Entanglement Matrix (Weight Type: ' weightType ')']);
+set(gca, 'XTick', 1:numPrimes, 'XTickLabel', primesList, 'XTickLabelRotation', 90);
+set(gca, 'YTick', 1:N, 'YTickLabel', 1:N);
+
+% Visualization: Tensor Network Representation
+figure;
+hold on;
+for n = 1:N
+    for pIndex = 1:numPrimes
+        if amplitudes(n, pIndex) > 0
+            % Draw lines representing entanglement between integer and prime factor
+            plot([n, numPrimes + pIndex], [N - n, N - n], 'b-');
+        end
+    end
+end
+
+% Overlay integer and prime labels
+for n = 1:N
+    text(n, N - n, num2str(n), 'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle');
+end
+for pIndex = 1:numPrimes
+    text(numPrimes + pIndex, 0, num2str(primesList(pIndex)), 'HorizontalAlignment', 'center', ...
+        'VerticalAlignment', 'middle', 'Color', 'red');
+end
+
+title('Tensor Network Representation of Entangled Integers');
+xlabel('Primes');
+ylabel('Integers');
+hold off;
+
+% Visualization: Quantum State Phases
+figure;
+imagesc(angle(quantumStates));
+colorbar;
+xlabel('Prime Factors');
+ylabel('Integers');
+title('Quantum State Phases (Radians)');
+set(gca, 'XTick', 1:numPrimes, 'XTickLabel', primesList, 'XTickLabelRotation', 90);
+set(gca, 'YTick', 1:N, 'YTickLabel', 1:N);
+```
+
+### **New Features**
+1. **Increased `N`**:
+   - Now supports a larger dataset (\(N = 200\)) for richer analysis.
+
+2. **Weight Types**:
+   - `log`: Logarithm of primes (default).
+   - `power`: Squares of primes.
+   - `count`: Uniform weights for counting prime factors.
+
+3. **Quantum-Like States**:
+   - Each entry in the matrix is treated as a complex quantum state with random phases.
+   - Added a visualization for the phases.
+
+### **How to Use**
+1. **Change Weight Type**:
+   - Modify `weightType` to `'log'`, `'power'`, or `'count'`.
+
+2. **Visualizations**:
+   - Heatmap for the entanglement matrix.
+   - Tensor network representation of the entanglement.
+   - Phase visualization for quantum states.
+   - 
+![image](https://github.com/user-attachments/assets/a6164beb-2e47-45dc-8070-c4b4f65d42d4)
+
+![image](https://github.com/user-attachments/assets/c14a18fb-daaf-49c2-8622-eae812bc422e)
+
+![image](https://github.com/user-attachments/assets/a028354a-e9b4-4571-8d28-770d098382d0)
+
+
+
 2. **Prime "Fingerprinting" with Zeros**:
    Design an algorithm to map prime numbers to unique wavefunctions. Analyze interference patterns from these wavefunctions to reconstruct \( \zeta(s) \) and locate its zeros.
+
+Below is a MATLAB code implementing **Prime "Fingerprinting" with Zeros**. Each prime number is mapped to a unique wavefunction, and their interference patterns are analyzed to approximate the Riemann zeta function \(\zeta(s)\). The algorithm reconstructs \(\zeta(s)\) from these patterns and identifies potential zeros.
+
+### MATLAB Code: Prime Fingerprinting and Zeta Reconstruction
+
+```matlab
+function PrimeFingerprinting()
+    % Main Program
+    numPrimes = 50; % Number of primes to consider
+    primesList = primes(300); % Generate primes up to 300
+    primesList = primesList(1:numPrimes); % Take the first `numPrimes`
+    tValues = 0:0.1:50; % Imaginary part of s (t) for zeta(s)
+    sigma = 0.5; % Real part of s (critical line)
+
+    % Reconstruct zeta(s) from wavefunctions
+    zetaReconstructed = zeros(1, length(tValues));
+    for k = 1:length(tValues)
+        t = tValues(k);
+        waveSum = 0;
+        for p = primesList
+            waveSum = waveSum + primeWavefunction(p, t);
+        end
+        zetaReconstructed(k) = abs(waveSum); % Magnitude of the wavefunction sum
+    end
+
+    % Visualization
+    figure;
+
+    % Plot reconstructed zeta function
+    subplot(2, 1, 1);
+    plot(tValues, zetaReconstructed, 'b-', 'LineWidth', 1.5);
+    title('Reconstructed Zeta Function |ζ(0.5 + it)|');
+    xlabel('t (Imaginary Part of s)');
+    ylabel('|ζ(0.5 + it)|');
+    grid on;
+
+    % Highlight zeros (local minima)
+    [~, minimaLocs] = findpeaks(-zetaReconstructed);
+    hold on;
+    plot(tValues(minimaLocs), zetaReconstructed(minimaLocs), 'ro', 'MarkerSize', 8);
+    legend('|ζ(0.5 + it)|', 'Zeros (Approx)');
+
+    % Interference patterns from prime wavefunctions
+    subplot(2, 1, 2);
+    interferencePattern = zeros(1, length(tValues));
+    for k = 1:length(tValues)
+        t = tValues(k);
+        for p = primesList
+            interferencePattern(k) = interferencePattern(k) + real(primeWavefunction(p, t));
+        end
+    end
+    plot(tValues, interferencePattern, 'r-', 'LineWidth', 1.5);
+    title('Interference Patterns from Prime Wavefunctions');
+    xlabel('t (Imaginary Part of s)');
+    ylabel('Interference Amplitude');
+    grid on;
+end
+
+% Define wavefunction for a prime
+function wf = primeWavefunction(p, t)
+    wf = exp(1i * t * log(p)); % Wavefunction: phase encoded by log(p)
+end
+
+
+```
+
+### **Explanation**
+
+1. **Prime Wavefunctions**:
+   - Each prime \( p \) is mapped to a unique wavefunction \( \psi_p(t) = e^{i t \log(p)} \), where the phase is encoded by the logarithm of the prime.
+   - The imaginary part \( t \) corresponds to the critical line \( \sigma = 0.5 \).
+
+2. **Reconstructing \(\zeta(s)\)**:
+   - The sum of the wavefunctions across all primes approximates the zeta function:
+     \[
+     \zeta(s) \approx \sum_p \psi_p(t)
+     \]
+   - The magnitude of the sum is used to visualize \(|\zeta(0.5 + it)|\).
+
+3. **Locating Zeros**:
+   - Zeros of \(\zeta(s)\) correspond to local minima of the reconstructed \(|\zeta(0.5 + it)|\).
+   - These minima are identified and highlighted on the plot.
+
+4. **Interference Patterns**:
+   - The second subplot shows the real part of the interference pattern from all prime wavefunctions, providing a view of how primes collectively contribute to the structure of \(\zeta(s)\).
+
+### **Features**
+- **Interactive Analysis**:
+  - Vary `numPrimes` to see how the reconstruction improves with more primes.
+  - Adjust `tValues` for a finer or broader analysis of the imaginary part of \( s \).
+
+- **Insights into Zeros**:
+  - The approximate zeros of \(\zeta(s)\) are marked, enabling a visual connection between interference patterns and zeros.
+
+![image](https://github.com/user-attachments/assets/71964fba-73a5-4eb7-9b8b-e9a9203360bd)
+
+
+
+### **Next Steps**
+- Refine the model by including more primes and using higher-precision arithmetic.
+- Extend the wavefunction definition to include weightings or damping effects.
+- Compare the identified zeros with known zeros of the Riemann zeta function.
+
+
 
 ---
 
 ### **Numerical Simulation and Verification**
 - Use modern computational tools, such as machine learning and quantum simulation, to explore this framework. Neural networks trained on prime distributions could offer insights into the spectral properties of the operator \( \mathcal{H} \).
 - Simulate the behavior of \( \zeta(s) \) near critical points using quantum computers to search for connections between its zeros and primes.
+
+
+//////////////////////////////////
+
 
 ---
 
