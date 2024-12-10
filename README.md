@@ -19,7 +19,7 @@ Tackling the Riemann Hypothesis (RH) requires creativity, deep mathematical insi
 
 Below is the correctly formatted Octave code for calculating and visualizing the prime wavefunction:
 
-https://www.mycompiler.io/new/octave
+ 
 
 ```octave
 % Parameters
