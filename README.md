@@ -1,3 +1,10 @@
+- https://www.quicklatex.com/
+- https://www.mycompiler.io/new/octave
+- https://matlab.mathworks.com/
+  
+
+
+
 chatgpt discussion
 
 
